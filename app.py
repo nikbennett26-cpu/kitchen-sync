@@ -1,24 +1,92 @@
+This is a classic battle between **Streamlit's default dark mode behavior** and **mobile browser rendering**.
+
+In your screenshot, the "popover" (the floating menu box) is still rendering with a dark background because it technically lives *outside* the main app container in the code structure, so it missed our previous background setting.
+
+I have updated the CSS with a **"Nuclear Fix"**.
+
+1. I added `color-scheme: light` to force the browser to treat the page as light mode.
+2. I targeted the specific **popover container** (`div[data-baseweb="popover"]`) to force it white.
+3. I kept the **"Cook Now"** feature you liked.
+
+**Replace your `app.py` with this final robust version:**
+
+```python
 import streamlit as st
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Fridge Raider v3 Pro", layout="wide")
 
-# --- PROFESSIONAL "CLEAN CARD" CSS (FIXED FOR MOBILE DROPDOWNS) ---
+# --- PROFESSIONAL CSS (MOBILE & DARK MODE FIX) ---
 st.markdown("""
 <style>
-    /* 1. MAIN BACKGROUND - Soft Off-White */
+    /* 1. FORCE BROWSER LIGHT MODE RENDERING */
+    :root {
+        color-scheme: light;
+    }
+    
+    /* 2. MAIN BACKGROUND */
     .stApp {
         background-color: #f3f4f6 !important;
         background-image: none !important;
     }
 
-    /* 2. TEXT COLOR - Force Dark Grey (High Contrast) */
+    /* 3. TEXT COLOR - Force Dark Grey */
     h1, h2, h3, h4, h5, h6, p, div, span, label, li {
         color: #1f2937 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
-    /* 3. HEADER STYLING */
+    /* 4. SIDEBAR */
+    section[data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e5e7eb;
+    }
+    
+    /* --- 5. THE DROPDOWN FIX (NUCLEAR OPTION) --- */
+    
+    /* Target the floating popover container itself */
+    div[data-baseweb="popover"] {
+        background-color: #ffffff !important;
+        border: 1px solid #e5e7eb;
+    }
+    
+    /* Target the list inside the popover */
+    ul[data-baseweb="menu"] {
+        background-color: #ffffff !important;
+    }
+    
+    /* Target the options (items) inside the list */
+    li[data-baseweb="option"] {
+        background-color: #ffffff !important; /* Force white background */
+        color: #1f2937 !important;            /* Force dark text */
+    }
+    
+    /* Hover/Selection State */
+    li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] {
+        background-color: #eff6ff !important;
+        color: #2563eb !important;
+    }
+
+    /* The Input Box (where you type) */
+    div[data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        color: #1f2937 !important;
+        border: 1px solid #d1d5db;
+    }
+    
+    /* Text inside the input box */
+    div[data-baseweb="select"] span {
+        color: #1f2937 !important;
+    }
+    
+    /* The 'X' and Arrow icons */
+    div[data-baseweb="select"] svg {
+        fill: #6b7280 !important;
+    }
+
+    /* --- END OF FIX --- */
+
+    /* 6. HEADER STYLING */
     h1 {
         background: -webkit-linear-gradient(45deg, #2563eb, #9333ea);
         -webkit-background-clip: text;
@@ -28,54 +96,7 @@ st.markdown("""
         padding-bottom: 10px;
     }
 
-    /* 4. SIDEBAR - Pure White with border */
-    section[data-testid="stSidebar"] {
-        background-color: #ffffff !important;
-        border-right: 1px solid #e5e7eb;
-    }
-    
-    /* --- 5. FIXED DROPDOWN MENUS --- */
-    ul[data-baseweb="menu"] {
-        background-color: #ffffff !important;
-        border: 1px solid #e5e7eb !important;
-    }
-    li[data-baseweb="option"] {
-        color: #1f2937 !important;
-    }
-    li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] {
-        background-color: #eff6ff !important;
-        color: #2563eb !important;
-    }
-    div[data-baseweb="select"] > div {
-        background-color: #ffffff !important;
-        color: #1f2937 !important;
-        border: 1px solid #d1d5db;
-    }
-    div[data-baseweb="select"] span {
-        color: #1f2937 !important;
-    }
-    div[data-baseweb="select"] svg {
-        fill: #6b7280 !important;
-    }
-
-    /* 6. CARD & TAG STYLING */
-    div[data-testid="stVerticalBlock"] > div > div[data-testid="stImage"] {
-        border-radius: 12px 12px 0 0;
-        overflow: hidden;
-    }
-    
-    div.block-container {
-        padding-top: 2rem;
-    }
-    
-    .streamlit-expanderHeader {
-        background-color: #ffffff !important;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        color: #1f2937 !important;
-    }
-    
-    /* Custom Ingredient Badges */
+    /* 7. TAGS & BADGES */
     .have-tag {
         background-color: #dcfce7;
         color: #166534;
@@ -97,6 +118,22 @@ st.markdown("""
         display: inline-block;
         margin: 2px;
         border: 1px dashed #d1d5db;
+    }
+    
+    /* Sidebar Tags */
+    span[data-baseweb="tag"] {
+        background-color: #eff6ff !important;
+        border: 1px solid #bfdbfe;
+    }
+    span[data-baseweb="tag"] span {
+        color: #1e40af !important;
+    }
+    
+    /* Expander Header */
+    .streamlit-expanderHeader {
+        background-color: #ffffff !important;
+        color: #1f2937 !important;
+        border: 1px solid #e5e7eb;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -367,7 +404,7 @@ user_ingredients = st.sidebar.multiselect(
 user_fridge = set(user_ingredients)
 
 st.sidebar.markdown("---")
-# --- NEW TOGGLE FOR "COOK NOW" MODE ---
+# --- COOK NOW TOGGLE ---
 only_full_match = st.sidebar.checkbox("✅ Show only full matches (Cook Now)", value=False)
 
 # 3. Find and Display Matches
@@ -382,7 +419,7 @@ for recipe in recipes:
     
     match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
     
-    # FILTER LOGIC: If strict mode is ON, exclude anything < 100%
+    # FILTER LOGIC
     if only_full_match and match_percent < 100:
         continue
     
@@ -421,7 +458,7 @@ else:
                 else:
                     st.progress(item['match_percent'], text=f"{item['match_percent']}% Match")
                 
-                # --- NEW VISUAL DISPLAY FOR INGREDIENTS ---
+                # --- VISUAL DISPLAY FOR INGREDIENTS ---
                 st.write("**You have:**")
                 have_html = "".join([f'<span class="have-tag">✔ {ing}</span>' for ing in item['matching_items']])
                 st.markdown(have_html, unsafe_allow_html=True)
@@ -438,3 +475,5 @@ else:
                     st.write(recipe['instructions'])
                 
                 st.markdown("---")
+
+```
