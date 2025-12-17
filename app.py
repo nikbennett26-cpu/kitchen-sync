@@ -48,4 +48,22 @@ recipes = [
         "name": "BLT Sandwich 🥓",
         "ingredients": {"bread", "bacon", "lettuce", "tomato", "mayo"},
         "instructions": "Cook bacon, toast bread, layer ingredients with mayo.",
+        "image": "https://images.unsplash.com/photo-1553909489-cd47e3faaefc?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        "name": "Avocado Toast 🥑",
+        "ingredients": {"bread", "avocado", "salt", "lemon", "oil"},
+        "instructions": "Toast bread, smash avocado on top, season with salt and lemon.",
+        "image": "https://images.unsplash.com/photo-1588137372308-15f75323a557?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        "name": "Caesar Salad 🥗",
+        "ingredients": {"lettuce", "croutons", "parmesan", "chicken", "dressing"},
+        "instructions": "Toss lettuce with dressing, top with grilled chicken and croutons.",
+        "image": "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        "name": "Caprese Salad 🇮🇹",
+        "ingredients": {"tomato", "mozzarella", "basil", "oil", "balsamic"},
+        "instructions": "Slice tomatoes and cheese, arrange with basil, drizzle with oil.",
         "image": "
