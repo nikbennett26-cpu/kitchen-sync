@@ -1,16 +1,3 @@
-This is a classic battle between **Streamlit's default dark mode behavior** and **mobile browser rendering**.
-
-In your screenshot, the "popover" (the floating menu box) is still rendering with a dark background because it technically lives *outside* the main app container in the code structure, so it missed our previous background setting.
-
-I have updated the CSS with a **"Nuclear Fix"**.
-
-1. I added `color-scheme: light` to force the browser to treat the page as light mode.
-2. I targeted the specific **popover container** (`div[data-baseweb="popover"]`) to force it white.
-3. I kept the **"Cook Now"** feature you liked.
-
-**Replace your `app.py` with this final robust version:**
-
-```python
 import streamlit as st
 
 # --- PAGE CONFIG ---
@@ -475,5 +462,3 @@ else:
                     st.write(recipe['instructions'])
                 
                 st.markdown("---")
-
-```
