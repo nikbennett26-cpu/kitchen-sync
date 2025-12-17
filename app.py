@@ -5,29 +5,12 @@ st.write("Select the ingredients you have, and I'll tell you what to cook!")
 
 # 1. The Database (Now with Images!)
 recipes = [
+    # --- BREAKFAST ---
     {
         "name": "Classic Omelette 🍳",
         "ingredients": {"eggs", "cheese", "butter", "salt"},
         "instructions": "Whisk eggs, melt butter, cook until fluffy, add cheese.",
         "image": "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        "name": "Tomato Pasta 🍝",
-        "ingredients": {"pasta", "tomato sauce", "garlic", "oil"},
-        "instructions": "Boil pasta, sauté garlic in oil, add sauce, mix.",
-        "image": "https://images.unsplash.com/photo-1626844131082-256783844137?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        "name": "Grilled Cheese Sandwich 🥪",
-        "ingredients": {"bread", "cheese", "butter"},
-        "instructions": "Butter bread, place cheese inside, grill until golden.",
-        "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        "name": "Fruit Smoothie 🥤",
-        "ingredients": {"banana", "milk", "honey", "ice"},
-        "instructions": "Blend all ingredients until smooth.",
-        "image": "https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=400&q=80"
     },
     {
         "name": "Fluffy Pancakes 🥞",
@@ -42,31 +25,24 @@ recipes = [
         "image": "https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=400&q=80"
     },
     {
-        "name": "Chicken Stir Fry 🥡",
-        "ingredients": {"chicken", "rice", "soy sauce", "vegetables", "oil"},
-        "instructions": "Cook chicken, add veggies, stir in sauce, serve over rice.",
-        "image": "https://images.unsplash.com/photo-1603133872878-684f10842619?auto=format&fit=crop&w=400&q=80"
+        "name": "Oatmeal Bowl 🥣",
+        "ingredients": {"oats", "milk", "honey", "banana", "cinnamon"},
+        "instructions": "Cook oats in milk, top with sliced banana and honey.",
+        "image": "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=400&q=80"
     },
     {
-        "name": "Avocado Toast 🥑",
-        "ingredients": {"bread", "avocado", "salt", "lemon", "oil"},
-        "instructions": "Toast bread, smash avocado on top, season with salt and lemon.",
-        "image": "https://images.unsplash.com/photo-1588137372308-15f75323a557?auto=format&fit=crop&w=400&q=80"
+        "name": "Fruit Smoothie 🥤",
+        "ingredients": {"banana", "milk", "honey", "ice"},
+        "instructions": "Blend all ingredients until smooth.",
+        "image": "https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=400&q=80"
     },
+
+    # --- LUNCH ---
     {
-        "name": "Simple Tacos 🌮",
-        "ingredients": {"tortilla", "ground beef", "cheese", "lettuce", "salsa"},
-        "instructions": "Cook meat, fill tortillas, top with cheese and salsa.",
-        "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        "name": "BLT Sandwich 🥓",
-        "ingredients": {"bread", "bacon", "lettuce", "tomato", "mayo"},
-        "instructions": "Cook bacon, toast bread, layer ingredients with mayo.",
-        "image": "https://images.unsplash.com/photo-1553909489-cd47e3faaefc?auto=format&fit=crop&w=400&q=80"
-    }
-]
-# 2. Sidebar Setup
+        "name": "Grilled Cheese Sandwich 🥪",
+        "ingredients": {"bread", "cheese", "butter"},
+        "instructions": "Butter bread, place cheese inside, grill until golden.",
+        "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=80"# 2. Sidebar Setup
 all_possible_ingredients = set()
 for r in recipes:
     all_possible_ingredients.update(r['ingredients'])
