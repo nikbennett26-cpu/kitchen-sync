@@ -4,23 +4,30 @@ import time
 
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(
-    page_title="Fridge Raider Pro",
-    page_icon="🧊",
-    layout="wide"
+    page_title="My Python App",
+    page_icon="🚀",
+    layout="centered"
 )
 
-# --- 2. THE DESIGN SYSTEM (Mesh Gradient + Glassmorphism) ---
+# --- 2. CSS INJECTION (The Mesh Gradient & Glassmorphism) ---
+# We use st.markdown with unsafe_allow_html=True to inject CSS directly.
 st.markdown("""
     <style>
-    /* 1. APP BACKGROUND (Animated Mesh Gradient) */
+    /* RESET & BASE */
     .stApp {
+        background-color: #0f172a; /* Dark base */
+    }
+    
+    /* THE MESH GRADIENT BACKGROUND */
+    /* We attach this to the main Streamlit container */
+    [data-testid="stAppViewContainer"] {
         background-color: #0f172a;
         background-image: 
-            radial-gradient(at 10% 10%, #4c1d95 0px, transparent 50%),
-            radial-gradient(at 90% 90%, #1e40af 0px, transparent 50%),
-            radial-gradient(at 50% 50%, #be185d 0px, transparent 50%);
+            radial-gradient(at 10% 10%, #7c3aed 0px, transparent 50%),
+            radial-gradient(at 90% 90%, #2563eb 0px, transparent 50%),
+            radial-gradient(at 50% 50%, #db2777 0px, transparent 50%);
         background-size: 150% 150%;
-        animation: gradient-animation 15s ease infinite;
+        animation: gradient-animation 10s ease infinite;
     }
 
     @keyframes gradient-animation {
@@ -29,60 +36,83 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* 2. TEXT STYLING (Make everything White/Readable) */
-    h1, h2, h3, h4, h5, p, div, span, label {
-        color: #ffffff !important;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-    
-    /* 3. GLASSMORPHISM (Sidebar & Containers) */
-    section[data-testid="stSidebar"] {
-        background-color: rgba(0, 0, 0, 0.2) !important;
-        backdrop-filter: blur(10px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Style the Expanders (Recipe details) to look like glass cards */
-    .streamlit-expanderHeader {
+    /* GLASSMORPHISM CARDS */
+    div.css-1r6slb0, div.stButton > button {
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
         background-color: rgba(255, 255, 255, 0.1) !important;
-        border-radius: 8px;
+        border-radius: 12px;
+        border: 1px solid rgba(209, 213, 219, 0.3);
+        color: white !important;
+    }
+
+    /* TEXT COLORS */
+    h1, h2, h3, p, span, label {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
     
-    /* 4. CUSTOM METRICS (Streak/Coins) */
-    div[data-testid="stMetricValue"] {
-        font-size: 24px;
-        color: #fbbf24 !important; /* Gold color for numbers */
+    /* INPUT FIELDS STYLING */
+    input, textarea {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 3. SESSION STATE (Gamification Features) ---
+# --- 3. APP LOGIC & FEATURES ---
+
+# Initialize Session State for Gamification
 if 'streak' not in st.session_state:
-    st.session_state.streak = 12
-if 'points' not in st.session_state:
-    st.session_state.points = 450
-if 'cooked_today' not in st.session_state:
-    st.session_state.cooked_today = False
+    st.session_state.streak = 3  # Fake starting streak
+if 'coins' not in st.session_state:
+    st.session_state.coins = 150
 
-def cook_recipe():
-    if not st.session_state.cooked_today:
-        st.session_state.points += 50
-        st.session_state.streak += 1
-        st.session_state.cooked_today = True
-        st.toast("🍳 Yummy! +50 Cooking Points!", icon="🔥")
-    else:
-        st.toast("You already cooked today!", icon="✅")
+def claim_daily_reward():
+    st.session_state.streak += 1
+    st.session_state.coins += 50
+    st.toast("🔥 Streak extended! +50 Coins")
 
-# --- 4. DATA (Your Recipes) ---
-recipes = [
-    {
-        "name": "Classic Omelette 🍳",
-        "ingredients": {"eggs", "cheese", "butter", "salt"},
-        "instructions": "Whisk eggs, melt butter, cook until fluffy, add cheese.",
-        "image": "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        "name": "Fluffy Pancakes 🥞",
-        "ingredients": {"eggs", "milk", "flour", "butter", "sugar"},
-        "instructions": "Mix dry and wet ingredients separately, combine, and fry in butter.",
-        "image": "
+# --- UI LAYOUT ---
+
+st.title("🚀 Python Super App")
+st.markdown("Welcome to your enhanced dashboard.")
+
+# FEATURE: GAMIFICATION (Sticky Feature)
+col1, col2 = st.columns(2)
+with col1:
+    st.metric(label="🔥 Daily Streak", value=f"{st.session_state.streak} Days")
+with col2:
+    st.metric(label="💰 Coins", value=st.session_state.coins, delta=50)
+
+if st.button("Claim Daily Reward"):
+    claim_daily_reward()
+
+st.divider()
+
+# FEATURE: TIERED ACCESS (Monetization)
+st.subheader("💎 Membership Tier")
+tier = st.radio("Select your plan:", ["Free", "Pro ($5/mo)", "Enterprise"], horizontal=True)
+
+if tier == "Pro ($5/mo)":
+    st.success("Pro features unlocked: Advanced Analytics enabled.")
+    # Show a fake chart just for Pro users
+    chart_data = [random.randint(10, 100) for _ in range(10)]
+    st.line_chart(chart_data)
+elif tier == "Free":
+    st.info("Upgrade to Pro to see advanced analytics.")
+
+st.divider()
+
+# FEATURE: IN-APP FEEDBACK (Growth)
+with st.expander("📢 Report a bug or suggest a feature"):
+    with st.form("feedback_form"):
+        text = st.text_area("What can we improve?")
+        submitted = st.form_submit_button("Submit Feedback")
+        if submitted:
+            st.success("Thanks! We sent this directly to the dev team.")
+
+# --- FOOTER ---
+st.markdown("---")
+st.caption("Built with Python & Streamlit • v2.0")
