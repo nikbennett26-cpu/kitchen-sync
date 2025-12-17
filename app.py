@@ -34,45 +34,31 @@ st.markdown("""
         border-right: 1px solid #e5e7eb;
     }
     
-    /* --- 5. FIXED DROPDOWN MENUS (The Critical Fix) --- */
-    
-    /* Force the dropdown list container to be white */
+    /* --- 5. FIXED DROPDOWN MENUS --- */
     ul[data-baseweb="menu"] {
         background-color: #ffffff !important;
         border: 1px solid #e5e7eb !important;
     }
-    
-    /* Force the options inside the list to be dark grey */
     li[data-baseweb="option"] {
         color: #1f2937 !important;
     }
-    
-    /* Highlight color when you hover or select an option */
     li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] {
         background-color: #eff6ff !important;
-        color: #2563eb !important; /* Blue text on highlight */
+        color: #2563eb !important;
     }
-
-    /* Fix the actual input box (where you type) */
     div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
         color: #1f2937 !important;
         border: 1px solid #d1d5db;
     }
-    
-    /* Ensure the text inside the input box is dark */
     div[data-baseweb="select"] span {
         color: #1f2937 !important;
     }
-    
-    /* Fix the 'X' button and arrow in the dropdown */
     div[data-baseweb="select"] svg {
         fill: #6b7280 !important;
     }
 
-    /* --- END OF FIX --- */
-    
-    /* 6. IMAGE & CARD STYLING */
+    /* 6. CARD & TAG STYLING */
     div[data-testid="stVerticalBlock"] > div > div[data-testid="stImage"] {
         border-radius: 12px 12px 0 0;
         overflow: hidden;
@@ -82,7 +68,6 @@ st.markdown("""
         padding-top: 2rem;
     }
     
-    /* Expander Styling */
     .streamlit-expanderHeader {
         background-color: #ffffff !important;
         border: 1px solid #e5e7eb;
@@ -90,13 +75,28 @@ st.markdown("""
         color: #1f2937 !important;
     }
     
-    /* Sidebar Tags */
-    span[data-baseweb="tag"] {
-        background-color: #eff6ff !important;
-        border: 1px solid #bfdbfe;
+    /* Custom Ingredient Badges */
+    .have-tag {
+        background-color: #dcfce7;
+        color: #166534;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        margin: 2px;
+        border: 1px solid #86efac;
     }
-    span[data-baseweb="tag"] span {
-        color: #1e40af !important;
+    
+    .missing-tag {
+        background-color: #f3f4f6;
+        color: #6b7280;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        display: inline-block;
+        margin: 2px;
+        border: 1px dashed #d1d5db;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -366,6 +366,10 @@ user_ingredients = st.sidebar.multiselect(
 )
 user_fridge = set(user_ingredients)
 
+st.sidebar.markdown("---")
+# --- NEW TOGGLE FOR "COOK NOW" MODE ---
+only_full_match = st.sidebar.checkbox("✅ Show only full matches (Cook Now)", value=False)
+
 # 3. Find and Display Matches
 st.markdown("### 👨‍🍳 Recipes You Can Cook")
 
@@ -374,20 +378,30 @@ matches = []
 for recipe in recipes:
     required_ingredients = recipe['ingredients']
     matching_items = user_fridge.intersection(required_ingredients)
+    missing_items = required_ingredients - user_fridge
+    
+    match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
+    
+    # FILTER LOGIC: If strict mode is ON, exclude anything < 100%
+    if only_full_match and match_percent < 100:
+        continue
     
     if len(matching_items) >= 1:
         matches.append({
             "recipe": recipe,
             "matching_items": matching_items,
-            "missing_items": required_ingredients - user_fridge,
-            "match_percent": int((len(matching_items) / len(required_ingredients)) * 100)
+            "missing_items": missing_items,
+            "match_percent": match_percent
         })
 
 # Sort matches by percentage (highest match first)
 matches.sort(key=lambda x: x['match_percent'], reverse=True)
 
 if not matches:
-    st.info("👋 Hey there! Select some ingredients from the sidebar to get started.")
+    if only_full_match:
+        st.warning("No 100% matches found. Try unchecking 'Cook Now' or add more ingredients!")
+    else:
+        st.info("👋 Hey there! Select some ingredients from the sidebar to get started.")
 else:
     col1, col2 = st.columns(2)
     
@@ -407,13 +421,19 @@ else:
                 else:
                     st.progress(item['match_percent'], text=f"{item['match_percent']}% Match")
                 
-                if not item['missing_items']:
-                    st.success("✅ Ready to cook!")
-                else:
-                    # Show what matches and what is missing
-                    st.write(f"**Have:** {', '.join(item['matching_items'])}")
-                    st.error(f"**Missing:** {', '.join(item['missing_items'])}")
-                    
+                # --- NEW VISUAL DISPLAY FOR INGREDIENTS ---
+                st.write("**You have:**")
+                have_html = "".join([f'<span class="have-tag">✔ {ing}</span>' for ing in item['matching_items']])
+                st.markdown(have_html, unsafe_allow_html=True)
+                
+                if item['missing_items'] and not only_full_match:
+                    st.write("**You need:**")
+                    missing_html = "".join([f'<span class="missing-tag">{ing}</span>' for ing in item['missing_items']])
+                    st.markdown(missing_html, unsafe_allow_html=True)
+                
+                if item['match_percent'] == 100:
+                     st.success("✅ Ready to cook!")
+
                 with st.expander("📝 View Instructions"):
                     st.write(recipe['instructions'])
                 
