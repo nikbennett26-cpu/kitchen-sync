@@ -1,11 +1,9 @@
 import streamlit as st
 
-st.title("🧊 Fridge Raider v3.2")
+st.title("🧊 Fridge Raider v3.3")
 st.write("Select the ingredients you have, and I'll tell you what to cook!")
 
-# --- THE RECIPE DATABASE (20 ITEMS) ---
 recipes = [
-    # --- BREAKFAST ---
     {
         "name": "Classic Omelette 🍳",
         "ingredients": {"eggs", "cheese", "butter", "salt"},
@@ -36,8 +34,6 @@ recipes = [
         "instructions": "Blend all ingredients until smooth.",
         "image": "https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=400&q=80"
     },
-
-    # --- LUNCH ---
     {
         "name": "Grilled Cheese Sandwich 🥪",
         "ingredients": {"bread", "cheese", "butter"},
@@ -68,8 +64,6 @@ recipes = [
         "instructions": "Slice tomatoes and cheese, arrange with basil, drizzle with oil.",
         "image": "https://images.unsplash.com/photo-1529312266912-b33cf6227e24?auto=format&fit=crop&w=400&q=80"
     },
-
-    # --- DINNER ---
     {
         "name": "Tomato Pasta 🍝",
         "ingredients": {"pasta", "tomato sauce", "garlic", "oil"},
@@ -85,7 +79,7 @@ recipes = [
     {
         "name": "Spaghetti Carbonara 🇮🇹",
         "ingredients": {"pasta", "eggs", "cheese", "bacon", "black pepper"},
-        "instructions": "Boil pasta. Fry bacon. Mix eggs and cheese. Toss hot pasta with egg mix (off heat) to create creamy sauce.",
+        "instructions": "Boil pasta. Fry bacon. Mix eggs and cheese. Toss hot pasta with egg mix (off heat).",
         "image": "https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=400&q=80"
     },
     {
@@ -122,4 +116,59 @@ recipes = [
         "name": "Mashed Potatoes & Chicken 🍗",
         "ingredients": {"potatoes", "butter", "milk", "chicken", "salt"},
         "instructions": "Boil and mash potatoes with butter/milk. Serve with roasted chicken.",
-        "image": "
+        "image": "https://images.unsplash.com/photo-1604908177453-7462950a6a3b?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        "name": "Banana Bread 🍌",
+        "ingredients": {"banana", "flour", "sugar", "butter", "eggs"},
+        "instructions": "Mash bananas, mix with wet then dry ingredients. Bake 350F for 60 mins.",
+        "image": "https://images.unsplash.com/photo-1600431521340-491eca880813?auto=format&fit=crop&w=400&q=80"
+    }
+]
+
+# --- APP LOGIC ---
+
+all_possible_ingredients = set()
+for r in recipes:
+    all_possible_ingredients.update(r['ingredients'])
+
+sorted_ingredients = sorted(list(all_possible_ingredients))
+
+st.sidebar.header("Your Fridge")
+user_ingredients = st.sidebar.multiselect(
+    "Select what you have:", 
+    options=sorted_ingredients,
+    default=["eggs", "cheese", "butter"]
+)
+user_fridge = set(user_ingredients)
+
+st.header("Recommended Recipes:")
+col1, col2 = st.columns(2)
+
+found_match = False
+
+for i, recipe in enumerate(recipes):
+    required_ingredients = recipe['ingredients']
+    matching_items = user_fridge.intersection(required_ingredients)
+    
+    if len(matching_items) >= 1:
+        found_match = True
+        with (col1 if i % 2 == 0 else col2):
+            st.image(recipe['image'], use_container_width=True)
+            st.subheader(recipe['name'])
+            missing = required_ingredients - user_fridge
+            
+            if not missing:
+                st.success("✅ You have everything!")
+                with st.expander("View Instructions"):
+                    st.write(recipe['instructions'])
+            else:
+                match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
+                st.progress(match_percent, text=f"{match_percent}% Match")
+                st.error(f"Missing: {', '.join(missing)}")
+                
+                if st.checkbox(f"Add missing to list", key=recipe['name']):
+                    st.sidebar.info(f"🛒 Buy: {', '.join(missing)}")
+
+if not found_match:
+    st.warning("No matches yet! Try selecting more ingredients.")
