@@ -1,9 +1,9 @@
 import streamlit as st
 
-st.title("🧊 Fridge Raider v2")
+st.title("🧊 Fridge Raider v3")
 st.write("Select the ingredients you have, and I'll tell you what to cook!")
 
-# 1. The Database (Now with Images!)
+# --- THE RECIPE DATABASE (20 ITEMS) ---
 recipes = [
     # --- BREAKFAST ---
     {
@@ -42,58 +42,10 @@ recipes = [
         "name": "Grilled Cheese Sandwich 🥪",
         "ingredients": {"bread", "cheese", "butter"},
         "instructions": "Butter bread, place cheese inside, grill until golden.",
-        "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=80"# 2. Sidebar Setup
-all_possible_ingredients = set()
-for r in recipes:
-    all_possible_ingredients.update(r['ingredients'])
-
-sorted_ingredients = sorted(list(all_possible_ingredients))
-
-st.sidebar.header("Your Fridge")
-user_ingredients = st.sidebar.multiselect(
-    "Select what you have:", 
-    options=sorted_ingredients,
-    default=["eggs", "cheese", "butter"]
-)
-
-user_fridge = set(user_ingredients)
-
-# 3. Logic & Display
-st.header("Recommended Recipes:")
-col1, col2 = st.columns(2) # Create a 2-column layout for a nicer look
-
-found_match = False
-
-for i, recipe in enumerate(recipes):
-    required_ingredients = recipe['ingredients']
-    matching_items = user_fridge.intersection(required_ingredients)
-    
-    # Logic: Show if we have at least 1 matching ingredient
-    if len(matching_items) >= 1:
-        found_match = True
-        
-        # Display in alternating columns
-        with (col1 if i % 2 == 0 else col2):
-            st.image(recipe['image'], use_container_width=True)
-            st.subheader(recipe['name'])
-            
-            # Missing Ingredients Logic
-            missing = required_ingredients - user_fridge
-            
-            if not missing:
-                st.success("✅ You have everything!")
-                with st.expander("View Instructions"):
-                    st.write(recipe['instructions'])
-            else:
-                # Calculate simple percentage match
-                match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
-                st.progress(match_percent, text=f"{match_percent}% Match")
-                
-                st.error(f"Missing: {', '.join(missing)}")
-                
-                # Shopping List Feature
-                if st.checkbox(f"Add missing items to list for {recipe['name']}", key=recipe['name']):
-                    st.sidebar.info(f"🛒 Buy: {', '.join(missing)}")
-
-if not found_match:
-    st.warning("No matches yet! Try selecting 'eggs' or 'pasta' in the sidebar.")
+        "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        "name": "BLT Sandwich 🥓",
+        "ingredients": {"bread", "bacon", "lettuce", "tomato", "mayo"},
+        "instructions": "Cook bacon, toast bread, layer ingredients with mayo.",
+        "image": "
