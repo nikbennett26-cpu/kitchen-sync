@@ -2,42 +2,42 @@ import streamlit as st
 import re
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Fridge Raider v4 Pro", layout="wide")
+st.set_page_config(page_title="Kitchen Sync", layout="wide", page_icon="🔄")
 
 # --- THEME MANAGEMENT ---
-# We use a checkbox in the sidebar to toggle modes
 with st.sidebar:
-    st.title("🥑 The Fridge")
-    dark_mode = st.toggle("🌙 Dark Mode", value=False)
+    st.title("🔄 Kitchen Sync")
+    st.caption("Get in sync with your ingredients.")
     st.write("---")
+    dark_mode = st.toggle("🌙 Dark Mode", value=False)
 
 # --- DEFINE CSS THEMES ---
 
-# 1. LIGHT THEME CSS (The Professional Clean Look)
+# 1. LIGHT THEME (Clean & Professional)
 light_theme_css = """
 <style>
     :root { color-scheme: light; }
-    .stApp { background-color: #f3f4f6 !important; }
+    .stApp { background-color: #f8fafc !important; }
     
     /* Text Colors */
     h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea, .stMarkdown {
-        color: #1f2937 !important;
+        color: #334155 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
     /* Sidebar */
-    section[data-testid="stSidebar"] { background-color: #ffffff !important; border-right: 1px solid #e5e7eb; }
+    section[data-testid="stSidebar"] { background-color: #ffffff !important; border-right: 1px solid #e2e8f0; }
     
     /* Inputs */
     .stTextArea textarea {
         background-color: #ffffff !important;
-        color: #1f2937 !important;
-        border: 1px solid #d1d5db;
+        color: #334155 !important;
+        border: 1px solid #cbd5e1;
     }
     
-    /* Header Gradient */
+    /* Header Gradient (Teal/Blue for Freshness) */
     h1 {
-        background: -webkit-linear-gradient(45deg, #2563eb, #9333ea);
+        background: -webkit-linear-gradient(45deg, #0d9488, #3b82f6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -45,78 +45,77 @@ light_theme_css = """
     /* Cards (Tabs/Expanders) */
     .stTabs [data-baseweb="tab"] {
         background-color: #ffffff;
-        border: 1px solid #e5e7eb;
-        color: #1f2937;
+        border: 1px solid #e2e8f0;
+        color: #475569;
     }
-    .stTabs [aria-selected="true"] { background-color: #2563eb !important; color: white !important; }
+    .stTabs [aria-selected="true"] { background-color: #0d9488 !important; color: white !important; }
     
     /* Badges */
-    .have-tag { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .missing-tag { background-color: #f3f4f6; color: #6b7280; border: 1px dashed #d1d5db; }
-    .sidebar-tag { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .have-tag { background-color: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+    .missing-tag { background-color: #f1f5f9; color: #64748b; border: 1px dashed #cbd5e1; }
+    .sidebar-tag { background-color: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
 </style>
 """
 
-# 2. DARK THEME CSS (High Contrast for Night Time)
+# 2. DARK THEME (High Contrast Night Mode)
 dark_theme_css = """
 <style>
     :root { color-scheme: dark; }
-    .stApp { background-color: #0e1117 !important; }
+    .stApp { background-color: #0f172a !important; }
     
-    /* Text Colors - Force White/Light Grey */
+    /* Text Colors */
     h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea, .stMarkdown {
-        color: #e5e7eb !important;
+        color: #f1f5f9 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
-    /* Sidebar - Dark Grey */
-    section[data-testid="stSidebar"] { background-color: #262730 !important; border-right: 1px solid #374151; }
+    /* Sidebar */
+    section[data-testid="stSidebar"] { background-color: #1e293b !important; border-right: 1px solid #334155; }
     
-    /* Inputs - Dark background, White text */
+    /* Inputs */
     .stTextArea textarea {
-        background-color: #1f2937 !important;
-        color: #ffffff !important;
-        border: 1px solid #4b5563;
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+        border: 1px solid #475569;
     }
-    .stTextArea label { color: #60a5fa !important; }
+    .stTextArea label { color: #38bdf8 !important; }
     
-    /* Header Gradient - Brighter for Dark Mode */
+    /* Header Gradient */
     h1 {
-        background: -webkit-linear-gradient(45deg, #60a5fa, #c084fc);
+        background: -webkit-linear-gradient(45deg, #2dd4bf, #818cf8);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
     
-    /* Cards (Tabs/Expanders) */
+    /* Cards */
     .stTabs [data-baseweb="tab"] {
-        background-color: #1f2937;
-        border: 1px solid #374151;
-        color: #e5e7eb;
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        color: #94a3b8;
     }
-    .stTabs [aria-selected="true"] { background-color: #60a5fa !important; color: white !important; }
+    .stTabs [aria-selected="true"] { background-color: #2dd4bf !important; color: #0f172a !important; }
     
-    /* Badges - Adjusted for Dark Mode */
+    /* Badges */
     .have-tag { background-color: #064e3b; color: #a7f3d0; border: 1px solid #059669; }
-    .missing-tag { background-color: #374151; color: #9ca3af; border: 1px dashed #4b5563; }
-    .sidebar-tag { background-color: #1e3a8a; color: #bfdbfe; border: 1px solid #2563eb; }
+    .missing-tag { background-color: #334155; color: #94a3b8; border: 1px dashed #475569; }
+    .sidebar-tag { background-color: #0c4a6e; color: #bae6fd; border: 1px solid #0284c7; }
     
     /* Fix Icons */
     button[kind="header"] { color: white !important; }
-    [data-testid="stExpander"] { background-color: #1f2937 !important; border: 1px solid #374151; }
-    .streamlit-expanderHeader { background-color: #1f2937 !important; color: #e5e7eb !important; }
+    [data-testid="stExpander"] { background-color: #1e293b !important; border: 1px solid #334155; }
+    .streamlit-expanderHeader { background-color: #1e293b !important; color: #f1f5f9 !important; }
 </style>
 """
 
-# --- INJECT THE CORRECT CSS ---
+# --- INJECT CSS ---
 if dark_mode:
     st.markdown(dark_theme_css, unsafe_allow_html=True)
 else:
     st.markdown(light_theme_css, unsafe_allow_html=True)
 
-# --- GLOBAL CSS FOR LAYOUT (Applies to both) ---
+# --- GLOBAL STYLES ---
 st.markdown("""
 <style>
-    /* Global Tag Styling Base */
     .have-tag, .missing-tag, .sidebar-tag {
         padding: 4px 10px;
         border-radius: 15px;
@@ -125,14 +124,19 @@ st.markdown("""
         display: inline-block;
         margin: 2px;
     }
+    .info-badge {
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0.8;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 
 # --- MAIN CONTENT ---
-st.title("Fridge Raider v4 Pro")
-st.markdown("### 🍳 Cook with what you have.")
-st.write("We don't want you to buy more food. We want you to use what is already in your kitchen.")
+st.title("Kitchen Sync")
+st.markdown("### 🍳 Everything but the... waste.")
+st.write("Enter the ingredients you already have at home, and we'll find the perfect recipe for you.")
 
 # --- SMART VEGAN LOGIC ---
 NON_VEGAN_ITEMS = {
