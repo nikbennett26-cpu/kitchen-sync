@@ -13,175 +13,161 @@ with st.sidebar:
 
 # --- CSS VARIABLES ---
 if dark_mode:
-    # DARK MODE PALETTE
-    bg_color = "#0e1117"
-    text_color = "#ffffff"
+    # DARK MODE
+    page_bg = "#0e1117"
+    sidebar_bg = "#161b22"  # Explicit dark sidebar
+    text_color = "#f0f6fc"
+    muted_text = "#8b949e"
+    
+    # Card Variables
+    card_bg = "#1e293b"
+    card_shadow = "0 8px 16px rgba(0,0,0,0.6)"
+    card_border = "1px solid #30363d"
+    card_header_bg = "linear-gradient(135deg, #1f6feb, #8b5cf6)" # Blue -> Purple
     
     # Input Box
-    input_bg = "#262730"
+    input_bg = "#0d1117"
     input_text = "#ffffff"
-    input_border = "1px solid #4a4a4a"
+    input_border = "1px solid #30363d"
     
-    # Cards
-    card_bg = "#1e293b" # Slate 800
-    card_border = "1px solid #334155" # Slate 700
-    card_shadow = "0 10px 15px -3px rgba(0, 0, 0, 0.5)"
-    card_accent = "linear-gradient(90deg, #3b82f6, #8b5cf6)" # Blue to Purple
-    
-    # Sidebar Tags
-    tag_bg = "#3b82f6"
-    tag_text = "#ffffff"
-    
-    # Tabs
-    tab_active_bg = "#3b82f6"
-    tab_active_text = "#ffffff"
-    tab_inactive_text = "#94a3b8"
+    # Badges
+    badge_bg = "#238636"
+    badge_text = "#ffffff"
 
 else:
-    # LIGHT MODE PALETTE
-    bg_color = "#f3f4f6"
+    # LIGHT MODE
+    page_bg = "#f3f4f6"
+    sidebar_bg = "#ffffff"
     text_color = "#1f2937"
+    muted_text = "#64748b"
+    
+    # Card Variables
+    card_bg = "#ffffff"
+    card_shadow = "0 10px 20px rgba(0,0,0,0.1)"
+    card_border = "1px solid #e5e7eb"
+    card_header_bg = "linear-gradient(135deg, #0d9488, #2563eb)" # Teal -> Blue
     
     # Input Box
     input_bg = "#ffffff"
-    input_text = "#000000"
+    input_text = "#1f2937"
     input_border = "1px solid #d1d5db"
     
-    # Cards
-    card_bg = "#ffffff"
-    card_border = "1px solid #e5e7eb"
-    card_shadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" # Deep shadow
-    card_accent = "linear-gradient(90deg, #0d9488, #2563eb)" # Teal to Blue
-    
-    # Sidebar Tags
-    tag_bg = "#0d9488"
-    tag_text = "#ffffff"
-    
-    # Tabs
-    tab_active_bg = "#0d9488"
-    tab_active_text = "#ffffff"
-    tab_inactive_text = "#64748b"
+    # Badges
+    badge_bg = "#d1fae5"
+    badge_text = "#065f46"
 
 # --- INJECT CSS ---
 st.markdown(f"""
 <style>
-    /* 1. MAIN BACKGROUND */
+    /* 1. FORCE BACKGROUNDS (Fixes Mobile White Sidebar) */
     .stApp {{
-        background-color: {bg_color} !important;
+        background-color: {page_bg} !important;
     }}
     
-    /* 2. TEXT COLORS */
+    section[data-testid="stSidebar"] {{
+        background-color: {sidebar_bg} !important;
+        border-right: 1px solid rgba(150,150,150, 0.1);
+    }}
+    
+    /* Target the mobile overlay specifically */
+    section[data-testid="stSidebar"] > div {{
+        background-color: {sidebar_bg} !important;
+    }}
+    
+    /* 2. TYPOGRAPHY */
     h1, h2, h3, h4, h5, h6, p, span, div, label {{
         color: {text_color} !important;
         font-family: 'Inter', sans-serif;
     }}
     
-    /* 3. INPUT BOX (Fixed Visibility) */
+    /* 3. INPUT BOX (High Contrast) */
     .stTextArea textarea {{
         background-color: {input_bg} !important;
         color: {input_text} !important;
         border: {input_border} !important;
         border-radius: 8px;
     }}
-    .stTextArea label {{
-        color: {text_color} !important;
-        font-weight: 600;
-    }}
     
-    /* 4. TABS (No Red Line) */
-    /* Hide the red bar container entirely */
-    div[data-baseweb="tab-highlight"] {{
-        background-color: transparent !important;
-        height: 0px !important;
-    }}
-    div[data-baseweb="tab-border"] {{
-        display: none !important;
-    }}
+    /* 4. TABS (The Pill - No Red Line) */
+    div[data-baseweb="tab-highlight"] {{ display: none !important; }}
+    div[data-baseweb="tab-border"] {{ display: none !important; }}
     
-    /* Tab Buttons */
     button[data-baseweb="tab"] {{
-        background-color: transparent !important;
-        color: {tab_inactive_text} !important;
-        border: 1px solid transparent !important;
-        border-radius: 20px !important;
-        margin-right: 5px;
-        font-weight: 600 !important;
+        background-color: rgba(125, 125, 125, 0.1) !important;
+        color: {muted_text} !important;
+        border-radius: 30px !important;
+        margin-right: 8px;
+        border: none !important;
+        padding: 4px 16px !important;
     }}
     
-    /* Active Tab */
     button[data-baseweb="tab"][aria-selected="true"] {{
-        background-color: {tab_active_bg} !important;
-        color: {tab_active_text} !important;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        background-image: {card_header_bg} !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }}
     
-    /* 5. 3D CARDS (Graphic Designer Style) */
+    /* 5. DESIGNER CARDS (Header Strip Style) */
     [data-testid="stVerticalBlockBorderWrapper"] {{
         background-color: {card_bg} !important;
         border: {card_border} !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
+        border-radius: 16px !important;
+        padding: 0px !important; /* Reset padding for header */
         box-shadow: {card_shadow} !important;
-        /* The Top Accent Line */
-        border-top: 5px solid transparent !important;
-        border-image: {card_accent} !important;
-        border-image-slice: 1 0 0 0 !important;
-        /* Animation */
-        transition: transform 0.2s ease-in-out;
+        overflow: hidden; /* Keeps header inside curves */
+        transition: transform 0.2s;
     }}
     
-    /* Hover Effect */
     [data-testid="stVerticalBlockBorderWrapper"]:hover {{
         transform: translateY(-5px);
-        border-color: {tab_active_bg} !important;
     }}
     
-    /* 6. SIDEBAR TAGS (Fixed Visibility) */
-    .sidebar-tag {{
-        background-color: {tag_bg};
-        color: {tag_text} !important;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.85rem;
-        font-weight: bold;
-        display: inline-block;
-        margin: 3px 2px;
-    }}
-    
-    /* 7. RECIPE TAGS */
-    .have-tag {{
-        background-color: #10b981;
+    /* Custom Class for the Card Header */
+    .card-header {{
+        background: {card_header_bg};
+        padding: 15px 20px;
         color: white !important;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.8rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }}
+    
+    .card-body {{
+        padding: 20px;
+    }}
+    
+    /* 6. BADGES */
+    .have-tag {{
+        background-color: {badge_bg};
+        color: {badge_text} !important;
+        padding: 4px 10px;
+        border-radius: 20px;
         font-weight: bold;
-        display: inline-block;
-        margin: 2px;
-    }}
-    .missing-tag {{
-        background-color: rgba(150,150,150,0.2);
-        color: {text_color} !important;
-        padding: 4px 8px;
-        border-radius: 4px;
         font-size: 0.8rem;
         display: inline-block;
         margin: 2px;
-        opacity: 0.7;
     }}
     
-    /* 8. CLEANUP */
-    button[kind="header"] {{ color: {text_color} !important; }}
-    .streamlit-expanderHeader {{ background-color: transparent !important; border: none !important; }}
-    [data-testid="stExpander"] {{ border: none !important; box-shadow: none !important; }}
-    
-    /* Header styling */
-    h3 {{
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-        font-weight: 800 !important;
+    .missing-tag {{
+        background-color: rgba(125,125,125,0.15);
+        color: {muted_text} !important;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: inline-block;
+        margin: 2px;
     }}
-
+    
+    /* 7. CLEANUP */
+    .streamlit-expanderHeader {{
+        background-color: transparent !important;
+        border: none !important;
+        font-weight: 600;
+    }}
+    [data-testid="stExpander"] {{
+        border: none !important;
+        box-shadow: none !important;
+    }}
+    
 </style>
 """, unsafe_allow_html=True)
 
@@ -271,7 +257,8 @@ recipes = [
     {"name": "Choc Chip Cookies 🍪", "ingredients": {"flour", "sugar", "butter", "chocolate chips", "eggs", "baking powder"}, "instructions": "Cream butter/sugar, add eggs, mix in dry ingredients and chocolate. Bake 350F for 10m.", "time": "20 mins", "one_pot": True},
     {"name": "Chocolate Mug Cake ☕", "ingredients": {"flour", "sugar", "cocoa powder", "milk", "oil", "chocolate chips"}, "instructions": "Mix all ingredients in a microwave-safe mug. Microwave for 60-90 seconds.", "time": "5 mins", "one_pot": True},
     {"name": "Guacamole & Chips 🥑", "ingredients": {"avocado", "onion", "tomato", "lime", "tortilla chips"}, "instructions": "Mash avocado with lime and salt. Stir in diced onion/tomato. Serve with chips.", "time": "10 mins", "one_pot": False},
-    {"name": "Apple Slices & Peanut Butter 🍎", "ingredients": {"apple", "peanut butter"}, "instructions": "Slice apple, dip in peanut butter. Simple and healthy.", "time": "5 mins", "one_pot": False},
+    {"name": "Apple Slices & Peanut Butter 🍎", "ingredients": {"apple", "peanut butter"},
+"instructions": "Slice apple, dip in peanut butter. Simple and healthy.", "time": "5 mins", "one_pot": False},
     {"name": "Deviled Eggs 🥚", "ingredients": {"eggs", "mayo", "mustard", "paprika"}, "instructions": "Boil eggs, peel, halve. Mix yolks with mayo/mustard. Pipe back in. Dust paprika.", "time": "20 mins", "one_pot": True},
     {"name": "Sweet Potato Fries 🍟", "ingredients": {"sweet potato", "oil", "salt", "paprika", "cornstarch"}, "instructions": "Cut potatoes into sticks. Toss with cornstarch, oil, spices. Bake 425F until crispy (25m).", "time": "35 mins", "one_pot": True},
     {"name": "Roasted Asparagus 🌿", "ingredients": {"asparagus", "olive oil", "lemon", "parmesan", "garlic"}, "instructions": "Toss asparagus in oil and garlic. Roast 400F for 10-15 mins. Top with lemon/parmesan.", "time": "20 mins", "one_pot": True}
@@ -369,8 +356,14 @@ def render_recipes(filter_mode="all"):
         
         with (col1 if i % 2 == 0 else col2):
             with st.container(border=True):
-                st.subheader(recipe['name'])
-                st.markdown(f'<div class="recipe-stats">⏱️ {recipe.get("time", "--")}</div>', unsafe_allow_html=True)
+                # Header Div
+                st.markdown(f'<div class="card-header">{recipe["name"]}</div>', unsafe_allow_html=True)
+                
+                # Body Content
+                st.markdown(f"""
+                <div class="card-body">
+                    <span style='font-size: 0.9rem; opacity: 0.7;'>⏱️ {recipe.get('time', '--')}</span>
+                """, unsafe_allow_html=True)
                 
                 if item['match_percent'] == 100:
                     st.progress(item['match_percent'], text="🔥 Perfect Match!")
@@ -391,6 +384,9 @@ def render_recipes(filter_mode="all"):
 
                 with st.expander("📝 View Instructions"):
                     st.write(recipe['instructions'])
+                
+                # Close body div
+                st.markdown("</div>", unsafe_allow_html=True)
 
 # Render content
 with tab1: render_recipes("all")
