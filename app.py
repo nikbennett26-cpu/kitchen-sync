@@ -13,16 +13,16 @@ with st.sidebar:
 
 # --- DEFINE CSS THEMES ---
 
-# 1. LIGHT THEME (Modern Card UI)
+# 1. LIGHT THEME
 light_theme_css = """
 <style>
     :root { color-scheme: light; }
-    .stApp { background-color: #f1f5f9 !important; } /* Slightly darker background to make cards pop */
+    .stApp { background-color: #f8fafc !important; }
     
     /* Text Colors */
     h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea, .stMarkdown {
         color: #334155 !important;
-        font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
     /* Sidebar */
@@ -33,47 +33,39 @@ light_theme_css = """
         background-color: #ffffff !important;
         color: #334155 !important;
         border: 1px solid #cbd5e1;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     }
     
-    /* HEADER GRADIENT */
+    /* Header Gradient */
     h1 {
-        background: -webkit-linear-gradient(45deg, #0d9488, #2563eb);
+        background: -webkit-linear-gradient(45deg, #0d9488, #3b82f6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
     
-    /* TABS */
+    /* Tabs */
     .stTabs [data-baseweb="tab"] {
-        background-color: transparent;
-        border: none;
-        color: #64748b;
-        font-weight: 600;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #475569;
     }
-    .stTabs [aria-selected="true"] { 
-        color: #0d9488 !important; 
-        border-bottom: 2px solid #0d9488 !important;
-    }
+    .stTabs [aria-selected="true"] { background-color: #0d9488 !important; color: white !important; }
     
-    /* --- CARD DESIGN (The Fix) --- */
+    /* Card Design (Light) */
     [data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #ffffff;
-        border: 1px solid #cbd5e1 !important; /* Visible Border */
+        border: 1px solid #cbd5e1 !important;
         border-radius: 12px !important;
         padding: 16px !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Drop Shadow */
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
     }
-    
-    /* Hover Effect for Cards */
     [data-testid="stVerticalBlockBorderWrapper"]:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         border-color: #94a3b8 !important;
     }
 
     /* Badges */
-    .have-tag { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .have-tag { background-color: #d1fae5; color: #065f46; border: 1px solid #34d399; }
     .missing-tag { background-color: #f1f5f9; color: #64748b; border: 1px dashed #cbd5e1; }
     .sidebar-tag { background-color: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
 </style>
@@ -87,8 +79,8 @@ dark_theme_css = """
     
     /* Text Colors */
     h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea, .stMarkdown {
-        color: #f8fafc !important;
-        font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        color: #f1f5f9 !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
     /* Sidebar */
@@ -96,8 +88,8 @@ dark_theme_css = """
     
     /* Inputs */
     .stTextArea textarea {
-        background-color: #334155 !important;
-        color: #f8fafc !important;
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
         border: 1px solid #475569;
     }
     .stTextArea label { color: #38bdf8 !important; }
@@ -110,10 +102,14 @@ dark_theme_css = """
     }
     
     /* Tabs */
-    .stTabs [data-baseweb="tab"] { color: #94a3b8; border: none; }
-    .stTabs [aria-selected="true"] { color: #2dd4bf !important; border-bottom: 2px solid #2dd4bf !important; }
+    .stTabs [data-baseweb="tab"] {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        color: #94a3b8;
+    }
+    .stTabs [aria-selected="true"] { background-color: #2dd4bf !important; color: #0f172a !important; }
     
-    /* --- CARD DESIGN (Dark Mode) --- */
+    /* Card Design (Dark) */
     [data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #1e293b;
         border: 1px solid #334155 !important;
@@ -121,7 +117,6 @@ dark_theme_css = """
         padding: 16px !important;
         transition: transform 0.2s ease;
     }
-    
     [data-testid="stVerticalBlockBorderWrapper"]:hover {
         transform: translateY(-2px);
         border-color: #475569 !important;
@@ -135,7 +130,7 @@ dark_theme_css = """
     
     /* Icons/Containers */
     button[kind="header"] { color: white !important; }
-    .streamlit-expanderHeader { background-color: transparent !important; color: #f8fafc !important; }
+    .streamlit-expanderHeader { background-color: transparent !important; color: inherit !important; }
 </style>
 """
 
@@ -156,11 +151,16 @@ st.markdown("""
         display: inline-block;
         margin: 2px;
     }
-    /* Card Title Styling */
     h3 {
-        font-weight: 700 !important;
+        padding-top: 0px !important;
+        margin-bottom: 5px !important;
         font-size: 1.3rem !important;
-        margin-bottom: 0.5rem !important;
+        font-weight: 700 !important;
+    }
+    .recipe-stats {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -172,9 +172,13 @@ st.markdown("### 🍳 Everything but the... waste.")
 st.write("Enter the ingredients you already have at home, and we'll find the perfect recipe for you.")
 
 # --- LOGIC ---
-NON_VEGAN_ITEMS = {"eggs", "cheese", "butter", "milk", "chicken", "beef", "bacon", "tuna", "salmon", "shrimp", "honey", "cream cheese", "yogurt", "mayo", "ground beef", "parmesan", "mozzarella", "feta"}
+NON_VEGAN_ITEMS = {
+    "eggs", "cheese", "butter", "milk", "chicken", "beef", "bacon", "tuna", 
+    "salmon", "shrimp", "honey", "cream cheese", "yogurt", "mayo", "ground beef", 
+    "parmesan", "mozzarella", "feta"
+}
 
-# --- THE RECIPE DATABASE (No Calories) ---
+# --- THE RECIPE DATABASE ---
 recipes = [
     # --- 1. EMPTY FRIDGE / PANTRY STAPLES ---
     {
@@ -665,4 +669,85 @@ for item in cleaned_items:
 if recognized_items:
     st.sidebar.write("Found ingredients:")
     tags_html = "".join([f'<span class="sidebar-tag">{ing}</span>' for ing in set(recognized_items)])
-    st.sidebar.markdown(tags_html, unsafe_
+    st.sidebar.markdown(tags_html, unsafe_allow_html=True)
+
+st.sidebar.markdown("---")
+only_full_match = st.sidebar.checkbox("✅ Cook Now (Full Match)", value=False)
+
+# --- TABS ---
+st.write(" ")
+tab1, tab2, tab3, tab4 = st.tabs(["🍽 All Recipes", "🌱 Vegan", "🥘 One Pot", "🥕 Simple (5-6 Ingred)"])
+
+def render_recipes(filter_mode="all"):
+    matches = []
+    
+    for recipe in recipes:
+        required_ingredients = recipe['ingredients']
+        matching_items = user_fridge.intersection(required_ingredients)
+        missing_items = required_ingredients - user_fridge
+        match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
+        
+        # GLOBAL FILTER
+        if only_full_match and match_percent < 100:
+            continue
+            
+        # TAB FILTERS
+        if filter_mode == "vegan":
+            if not required_ingredients.isdisjoint(NON_VEGAN_ITEMS):
+                continue
+        elif filter_mode == "simple":
+            if not (5 <= len(required_ingredients) <= 6):
+                continue
+        elif filter_mode == "one_pot":
+            if not recipe.get("one_pot", False):
+                continue
+        
+        if len(matching_items) >= 1:
+            matches.append({
+                "recipe": recipe,
+                "matching_items": matching_items,
+                "missing_items": missing_items,
+                "match_percent": match_percent
+            })
+            
+    matches.sort(key=lambda x: x['match_percent'], reverse=True)
+    
+    if not matches:
+        st.info("No recipes found in this category with your current ingredients!")
+        return
+
+    col1, col2 = st.columns(2)
+    for i, item in enumerate(matches):
+        recipe = item['recipe']
+        ing_count = len(recipe['ingredients'])
+        
+        with (col1 if i % 2 == 0 else col2):
+            with st.container(border=True):
+                st.subheader(recipe['name'])
+                st.markdown(f'<div class="recipe-stats">⏱️ {recipe.get("time", "--")}</div>', unsafe_allow_html=True)
+                
+                if item['match_percent'] == 100:
+                    st.progress(item['match_percent'], text="🔥 Perfect Match!")
+                else:
+                    st.progress(item['match_percent'], text=f"{item['match_percent']}% Match")
+                
+                st.write("**You have:**")
+                have_html = "".join([f'<span class="have-tag">✔ {ing}</span>' for ing in item['matching_items']])
+                st.markdown(have_html, unsafe_allow_html=True)
+                
+                if item['missing_items'] and not only_full_match:
+                    st.write("**You need:**")
+                    missing_html = "".join([f'<span class="missing-tag">{ing}</span>' for ing in item['missing_items']])
+                    st.markdown(missing_html, unsafe_allow_html=True)
+                
+                if item['match_percent'] == 100:
+                     st.success("✅ Ready to cook!")
+
+                with st.expander("📝 View Instructions"):
+                    st.write(recipe['instructions'])
+
+# Render content
+with tab1: render_recipes("all")
+with tab2: render_recipes("vegan")
+with tab3: render_recipes("one_pot")
+with tab4: render_recipes("simple")
