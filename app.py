@@ -4,89 +4,132 @@ import re
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Fridge Raider v4 Pro", layout="wide")
 
-# --- PROFESSIONAL CSS (MOBILE FIX: DARK MENU / WHITE TEXT) ---
-st.markdown("""
-<style>
-    /* 1. FORCE LIGHT MODE */
-    :root { color-scheme: light; }
-    
-    /* 2. MAIN BACKGROUND */
-    .stApp { background-color: #f3f4f6 !important; }
+# --- THEME MANAGEMENT ---
+# We use a checkbox in the sidebar to toggle modes
+with st.sidebar:
+    st.title("🥑 The Fridge")
+    dark_mode = st.toggle("🌙 Dark Mode", value=False)
+    st.write("---")
 
-    /* 3. TEXT COLOR */
-    h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea {
+# --- DEFINE CSS THEMES ---
+
+# 1. LIGHT THEME CSS (The Professional Clean Look)
+light_theme_css = """
+<style>
+    :root { color-scheme: light; }
+    .stApp { background-color: #f3f4f6 !important; }
+    
+    /* Text Colors */
+    h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea, .stMarkdown {
         color: #1f2937 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
-    /* 4. SIDEBAR */
+    /* Sidebar */
     section[data-testid="stSidebar"] { background-color: #ffffff !important; border-right: 1px solid #e5e7eb; }
     
-    /* TEXT AREA STYLING */
+    /* Inputs */
     .stTextArea textarea {
         background-color: #ffffff !important;
         color: #1f2937 !important;
         border: 1px solid #d1d5db;
-        border-radius: 8px;
     }
-    .stTextArea label {
-        font-size: 1.1rem !important;
-        font-weight: 700 !important;
-        color: #2563eb !important;
-    }
-
-    /* 6. TAB STYLING */
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; background-color: transparent; }
-    .stTabs [data-baseweb="tab"] {
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 10px 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        border: 1px solid #e5e7eb;
-    }
-    .stTabs [aria-selected="true"] { background-color: #2563eb !important; color: white !important; }
-
-    /* 7. HEADER */
+    
+    /* Header Gradient */
     h1 {
         background: -webkit-linear-gradient(45deg, #2563eb, #9333ea);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 800 !important;
-        font-size: 3rem !important;
-        padding-bottom: 10px;
     }
+    
+    /* Cards (Tabs/Expanders) */
+    .stTabs [data-baseweb="tab"] {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        color: #1f2937;
+    }
+    .stTabs [aria-selected="true"] { background-color: #2563eb !important; color: white !important; }
+    
+    /* Badges */
+    .have-tag { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .missing-tag { background-color: #f3f4f6; color: #6b7280; border: 1px dashed #d1d5db; }
+    .sidebar-tag { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+</style>
+"""
 
-    /* 8. TAGS */
-    .have-tag { background-color: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 15px; font-size: 0.85rem; font-weight: 600; display: inline-block; margin: 2px; border: 1px solid #86efac; }
-    .missing-tag { background-color: #f3f4f6; color: #6b7280; padding: 4px 10px; border-radius: 15px; font-size: 0.85rem; display: inline-block; margin: 2px; border: 1px dashed #d1d5db; }
+# 2. DARK THEME CSS (High Contrast for Night Time)
+dark_theme_css = """
+<style>
+    :root { color-scheme: dark; }
+    .stApp { background-color: #0e1117 !important; }
     
-    /* SIDEBAR RECOGNIZED TAGS */
-    .sidebar-tag {
-        background-color: #eff6ff;
-        color: #1e40af;
-        padding: 4px 8px;
-        border-radius: 4px;
-        margin-right: 5px;
-        margin-bottom: 5px;
+    /* Text Colors - Force White/Light Grey */
+    h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea, .stMarkdown {
+        color: #e5e7eb !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    
+    /* Sidebar - Dark Grey */
+    section[data-testid="stSidebar"] { background-color: #262730 !important; border-right: 1px solid #374151; }
+    
+    /* Inputs - Dark background, White text */
+    .stTextArea textarea {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+        border: 1px solid #4b5563;
+    }
+    .stTextArea label { color: #60a5fa !important; }
+    
+    /* Header Gradient - Brighter for Dark Mode */
+    h1 {
+        background: -webkit-linear-gradient(45deg, #60a5fa, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    /* Cards (Tabs/Expanders) */
+    .stTabs [data-baseweb="tab"] {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+        color: #e5e7eb;
+    }
+    .stTabs [aria-selected="true"] { background-color: #60a5fa !important; color: white !important; }
+    
+    /* Badges - Adjusted for Dark Mode */
+    .have-tag { background-color: #064e3b; color: #a7f3d0; border: 1px solid #059669; }
+    .missing-tag { background-color: #374151; color: #9ca3af; border: 1px dashed #4b5563; }
+    .sidebar-tag { background-color: #1e3a8a; color: #bfdbfe; border: 1px solid #2563eb; }
+    
+    /* Fix Icons */
+    button[kind="header"] { color: white !important; }
+    [data-testid="stExpander"] { background-color: #1f2937 !important; border: 1px solid #374151; }
+    .streamlit-expanderHeader { background-color: #1f2937 !important; color: #e5e7eb !important; }
+</style>
+"""
+
+# --- INJECT THE CORRECT CSS ---
+if dark_mode:
+    st.markdown(dark_theme_css, unsafe_allow_html=True)
+else:
+    st.markdown(light_theme_css, unsafe_allow_html=True)
+
+# --- GLOBAL CSS FOR LAYOUT (Applies to both) ---
+st.markdown("""
+<style>
+    /* Global Tag Styling Base */
+    .have-tag, .missing-tag, .sidebar-tag {
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
         display: inline-block;
-        border: 1px solid #bfdbfe;
-        font-size: 0.8rem;
+        margin: 2px;
     }
-    
-    /* INFO BADGES (Time/Calories) */
-    .info-badge {
-        font-size: 0.9rem;
-        color: #4b5563;
-        margin-right: 15px;
-        font-weight: 500;
-    }
-    
-    /* EXPANDER */
-    .streamlit-expanderHeader { background-color: #ffffff !important; color: #1f2937 !important; border: 1px solid #e5e7eb; }
 </style>
 """, unsafe_allow_html=True)
 
-# --- HEADER SECTION ---
+
+# --- MAIN CONTENT ---
 st.title("Fridge Raider v4 Pro")
 st.markdown("### 🍳 Cook with what you have.")
 st.write("We don't want you to buy more food. We want you to use what is already in your kitchen.")
@@ -98,7 +141,7 @@ NON_VEGAN_ITEMS = {
     "parmesan", "mozzarella", "feta"
 }
 
-# --- THE RECIPE DATABASE (With Time & Calories) ---
+# --- THE RECIPE DATABASE ---
 recipes = [
     # --- VEGAN SPECIALS 🌱 ---
     {
@@ -576,15 +619,12 @@ for r in recipes:
 sorted_ingredients = sorted(list(all_possible_ingredients))
 
 # --- SIDEBAR: Just the Fridge (TEXT INPUT) ---
-st.sidebar.title("🥑 The Fridge")
 st.sidebar.write("What do you have?")
 # Text Area for input
 user_input_text = st.sidebar.text_area("Type items (e.g. eggs, onions, tofu):", "eggs, cheese, butter")
 
 # PROCESS INPUT
-# 1. Split by comma or newline
 raw_items = re.split(r'[,\n]', user_input_text)
-# 2. Clean up whitespace and lower case
 cleaned_items = [x.strip().lower() for x in raw_items if x.strip()]
 
 # 3. Match against database
@@ -592,21 +632,17 @@ user_fridge = set()
 recognized_items = []
 
 for item in cleaned_items:
-    # Exact match check
     if item in sorted_ingredients:
         user_fridge.add(item)
         recognized_items.append(item)
     else:
-        # Partial match check (e.g. "egg" matches "eggs")
-        # Check if user input is singular of a plural ingredient
         for db_item in sorted_ingredients:
             if item in db_item or db_item in item: 
-                # Safety check to avoid matching "egg" to "eggplant"
                 if len(item) > 3 and (item in db_item or db_item in item):
                     user_fridge.add(db_item)
                     recognized_items.append(db_item)
                     break
-                elif item == db_item[:-1]: # Simple singular check
+                elif item == db_item[:-1]:
                     user_fridge.add(db_item)
                     recognized_items.append(db_item)
                     break
