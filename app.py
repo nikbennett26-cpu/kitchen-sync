@@ -6,18 +6,18 @@ st.set_page_config(page_title="Fridge Raider v3 Pro", layout="wide")
 # --- PROFESSIONAL CSS (MOBILE FIX: DARK MENU / WHITE TEXT) ---
 st.markdown("""
 <style>
-    /* 1. FORCE BROWSER LIGHT MODE RENDERING FOR MAIN APP */
+    /* 1. FORCE BROWSER LIGHT MODE RENDERING */
     :root {
         color-scheme: light;
     }
     
-    /* 2. MAIN BACKGROUND - Soft Off-White */
+    /* 2. MAIN BACKGROUND */
     .stApp {
         background-color: #f3f4f6 !important;
         background-image: none !important;
     }
 
-    /* 3. MAIN TEXT COLOR - Dark Grey */
+    /* 3. MAIN TEXT COLOR */
     h1, h2, h3, h4, h5, h6, p, div, span, label, li {
         color: #1f2937 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -30,42 +30,29 @@ st.markdown("""
     }
     
     /* --- 5. THE DROPDOWN FIX (HIGH CONTRAST DARK MODE) --- */
-    
-    /* Force the dropdown container to be Dark */
     div[data-baseweb="popover"], div[data-baseweb="popover"] > div {
         background-color: #111111 !important;
         border: 1px solid #333333 !important;
     }
-    
-    /* The List inside */
     ul[data-baseweb="menu"] {
         background-color: #111111 !important;
     }
-    
-    /* The Options (Items) - FORCE WHITE TEXT */
     li[data-baseweb="option"] {
         background-color: #111111 !important;
-        color: #ffffff !important; /* Bright White Text */
+        color: #ffffff !important;
     }
-    
-    /* Force any spans inside options to be white too */
     li[data-baseweb="option"] span {
         color: #ffffff !important;
     }
-    
-    /* Hover/Selection State - Blue with White Text */
     li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] {
         background-color: #2563eb !important;
         color: #ffffff !important;
     }
-    
-    /* The Input Box (Before clicking) - Keep White */
     div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
         color: #1f2937 !important;
         border: 1px solid #d1d5db;
     }
-    
     /* --- END OF FIX --- */
 
     /* 6. HEADER STYLING */
@@ -102,7 +89,7 @@ st.markdown("""
         border: 1px dashed #d1d5db;
     }
     
-    /* Sidebar Tags (Selected Items) */
+    /* Sidebar Tags */
     span[data-baseweb="tag"] {
         background-color: #eff6ff !important;
         border: 1px solid #bfdbfe;
@@ -128,6 +115,62 @@ st.write("---")
 
 # --- THE RECIPE DATABASE ---
 recipes = [
+    # --- NEW VEGGIE SPECIALS (5-6 Ingredients) ---
+    {
+        "name": "Roasted Brussels Sprouts 🥬",
+        "ingredients": {"brussels sprouts", "olive oil", "balsamic vinegar", "honey", "salt"},
+        "instructions": "Halve sprouts. Toss with oil, balsamic, honey, salt. Roast 400F for 20-25 mins until crispy.",
+        "image": "https://images.unsplash.com/photo-1438217346858-d6529eda59bc?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Kale & Apple Salad 🥗",
+        "ingredients": {"kale", "apple", "walnuts", "lemon", "olive oil", "parmesan"},
+        "instructions": "Massage kale with oil/lemon. Toss with sliced apples, toasted walnuts, and shaved parm.",
+        "image": "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Roasted Butternut Squash 🍠",
+        "ingredients": {"butternut squash", "olive oil", "cinnamon", "maple syrup", "salt"},
+        "instructions": "Cube squash. Toss with oil, cinnamon, syrup, salt. Roast 400F for 30 mins.",
+        "image": "https://images.unsplash.com/photo-1576092794353-91c271811e51?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Cabbage Stir Fry 🥬",
+        "ingredients": {"cabbage", "soy sauce", "garlic", "ginger", "sesame oil", "carrot"},
+        "instructions": "Sauté garlic/ginger. Add shredded cabbage and carrot. Stir fry 5 mins. Finish with soy sauce/sesame oil.",
+        "image": "https://images.unsplash.com/photo-1628833722230-10492cb91b97?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Spinach Chickpea Curry 🥘",
+        "ingredients": {"spinach", "chickpeas", "coconut milk", "curry paste", "onion", "tomato"},
+        "instructions": "Sauté onion. Add curry paste/tomatoes. Add chickpeas/milk. Simmer. Stir in spinach at the end.",
+        "image": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Honey Glazed Carrots 🥕",
+        "ingredients": {"carrots", "honey", "butter", "parsley", "salt"},
+        "instructions": "Boil carrots until tender. Drain. Toss in pan with melted butter and honey. Top with parsley.",
+        "image": "https://images.unsplash.com/photo-1582576163090-09d3b6f8a969?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Stuffed Mushrooms 🍄",
+        "ingredients": {"mushrooms", "cream cheese", "garlic", "spinach", "breadcrumbs"},
+        "instructions": "Remove stems. Mix cream cheese, garlic, chopped spinach. Fill caps. Top with breadcrumbs. Bake 375F for 20m.",
+        "image": "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Corn & Tomato Salad 🌽",
+        "ingredients": {"corn", "tomato", "onion", "basil", "olive oil", "lime"},
+        "instructions": "Combine corn, diced tomato, onion, basil. Dress with olive oil and lime juice.",
+        "image": "https://images.unsplash.com/photo-1530260626688-d482052d952a?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Broccoli Cheddar Soup 🥦",
+        "ingredients": {"broccoli", "cheese", "milk", "broth", "onion", "flour"},
+        "instructions": "Sauté onion. Add flour/milk/broth to thicken. Add broccoli, simmer until soft. Stir in cheese.",
+        "image": "https://images.unsplash.com/photo-1605282823759-3e969d27a44f?auto=format&fit=crop&w=600&q=80"
+    },
+
     # --- BREAKFAST ---
     {
         "name": "Classic Omelette 🍳",
@@ -152,12 +195,6 @@ recipes = [
         "ingredients": {"oats", "milk", "honey", "banana", "cinnamon"},
         "instructions": "Cook oats in milk, top with sliced banana and honey.",
         "image": "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=600&q=80"
-    },
-    {
-        "name": "Yogurt Parfait 🍓",
-        "ingredients": {"yogurt", "granola", "berries", "honey"},
-        "instructions": "Layer yogurt, granola, and fresh berries. Drizzle with honey.",
-        "image": "https://images.unsplash.com/photo-1488477181946-6428a029177b?auto=format&fit=crop&w=600&q=80"
     },
     {
         "name": "Avocado Toast with Egg 🥑",
@@ -446,8 +483,11 @@ user_ingredients = st.sidebar.multiselect(
 user_fridge = set(user_ingredients)
 
 st.sidebar.markdown("---")
+st.sidebar.header("Filters")
 # --- COOK NOW TOGGLE ---
-only_full_match = st.sidebar.checkbox("✅ Show only full matches (Cook Now)", value=False)
+only_full_match = st.sidebar.checkbox("✅ Cook Now (Full Match)", value=False)
+# --- SIMPLE MEALS TOGGLE (New) ---
+simple_meals_only = st.sidebar.checkbox("🥕 Simple Meals (5-6 Ingredients)", value=False)
 
 # 3. Find and Display Matches
 st.markdown("### 👨‍🍳 Recipes You Can Cook")
@@ -461,9 +501,14 @@ for recipe in recipes:
     
     match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
     
-    # FILTER LOGIC
+    # 1. COOK NOW FILTER
     if only_full_match and match_percent < 100:
         continue
+
+    # 2. SIMPLE MEALS FILTER (5-6 Ingredients Only)
+    if simple_meals_only:
+        if not (5 <= len(required_ingredients) <= 6):
+            continue
     
     if len(matching_items) >= 1:
         matches.append({
@@ -477,8 +522,8 @@ for recipe in recipes:
 matches.sort(key=lambda x: x['match_percent'], reverse=True)
 
 if not matches:
-    if only_full_match:
-        st.warning("No 100% matches found. Try unchecking 'Cook Now' or add more ingredients!")
+    if only_full_match or simple_meals_only:
+        st.warning("No recipes found with these filters. Try unchecking filters or adding ingredients!")
     else:
         st.info("👋 Hey there! Select some ingredients from the sidebar to get started.")
 else:
@@ -486,6 +531,7 @@ else:
     
     for i, item in enumerate(matches):
         recipe = item['recipe']
+        ing_count = len(recipe['ingredients'])
         
         # Display in alternating columns
         with (col1 if i % 2 == 0 else col2):
@@ -493,6 +539,7 @@ else:
             with st.container():
                 st.image(recipe['image'], use_container_width=True)
                 st.subheader(recipe['name'])
+                st.caption(f"{ing_count} Ingredients")
                 
                 # Progress bar for match strength
                 if item['match_percent'] == 100:
