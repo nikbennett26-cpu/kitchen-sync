@@ -6,62 +6,48 @@ st.set_page_config(page_title="Fridge Raider v3 Pro", layout="wide")
 # --- PROFESSIONAL CSS (MOBILE FIX: DARK MENU / WHITE TEXT) ---
 st.markdown("""
 <style>
-    /* 1. FORCE BROWSER LIGHT MODE RENDERING */
-    :root {
-        color-scheme: light;
-    }
+    /* 1. FORCE LIGHT MODE */
+    :root { color-scheme: light; }
     
     /* 2. MAIN BACKGROUND */
-    .stApp {
-        background-color: #f3f4f6 !important;
-        background-image: none !important;
-    }
+    .stApp { background-color: #f3f4f6 !important; }
 
-    /* 3. MAIN TEXT COLOR */
+    /* 3. TEXT COLOR */
     h1, h2, h3, h4, h5, h6, p, div, span, label, li {
         color: #1f2937 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
     /* 4. SIDEBAR */
-    section[data-testid="stSidebar"] {
-        background-color: #ffffff !important;
-        border-right: 1px solid #e5e7eb;
-    }
+    section[data-testid="stSidebar"] { background-color: #ffffff !important; border-right: 1px solid #e5e7eb; }
     
-    /* FORCE CHECKBOX TEXT VISIBILITY */
-    .stCheckbox label p {
-        color: #1f2937 !important;
-        font-weight: 600;
-    }
-    
-    /* --- 5. THE DROPDOWN FIX (HIGH CONTRAST DARK MODE) --- */
-    div[data-baseweb="popover"], div[data-baseweb="popover"] > div {
-        background-color: #111111 !important;
-        border: 1px solid #333333 !important;
-    }
-    ul[data-baseweb="menu"] {
-        background-color: #111111 !important;
-    }
-    li[data-baseweb="option"] {
-        background-color: #111111 !important;
-        color: #ffffff !important;
-    }
-    li[data-baseweb="option"] span {
-        color: #ffffff !important;
-    }
-    li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] {
-        background-color: #2563eb !important;
-        color: #ffffff !important;
-    }
-    div[data-baseweb="select"] > div {
-        background-color: #ffffff !important;
-        color: #1f2937 !important;
-        border: 1px solid #d1d5db;
-    }
-    /* --- END OF FIX --- */
+    /* --- 5. MOBILE DROPDOWN FIX --- */
+    div[data-baseweb="popover"], div[data-baseweb="popover"] > div { background-color: #111111 !important; border: 1px solid #333333 !important; }
+    ul[data-baseweb="menu"] { background-color: #111111 !important; }
+    li[data-baseweb="option"] { background-color: #111111 !important; color: #ffffff !important; }
+    li[data-baseweb="option"] span { color: #ffffff !important; }
+    li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] { background-color: #2563eb !important; color: #ffffff !important; }
+    div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1f2937 !important; border: 1px solid #d1d5db; }
+    div[data-baseweb="select"] svg { fill: #6b7280 !important; }
 
-    /* 6. HEADER STYLING */
+    /* 6. TAB STYLING */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+        background-color: transparent;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid #e5e7eb;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #2563eb !important;
+        color: white !important;
+    }
+
+    /* 7. HEADER */
     h1 {
         background: -webkit-linear-gradient(45deg, #2563eb, #9333ea);
         -webkit-background-clip: text;
@@ -71,45 +57,16 @@ st.markdown("""
         padding-bottom: 10px;
     }
 
-    /* 7. TAGS & BADGES */
-    .have-tag {
-        background-color: #dcfce7;
-        color: #166534;
-        padding: 4px 10px;
-        border-radius: 15px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: inline-block;
-        margin: 2px;
-        border: 1px solid #86efac;
-    }
+    /* 8. TAGS */
+    .have-tag { background-color: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 15px; font-size: 0.85rem; font-weight: 600; display: inline-block; margin: 2px; border: 1px solid #86efac; }
+    .missing-tag { background-color: #f3f4f6; color: #6b7280; padding: 4px 10px; border-radius: 15px; font-size: 0.85rem; display: inline-block; margin: 2px; border: 1px dashed #d1d5db; }
     
-    .missing-tag {
-        background-color: #f3f4f6;
-        color: #6b7280;
-        padding: 4px 10px;
-        border-radius: 15px;
-        font-size: 0.85rem;
-        display: inline-block;
-        margin: 2px;
-        border: 1px dashed #d1d5db;
-    }
+    /* SIDEBAR TAGS */
+    span[data-baseweb="tag"] { background-color: #eff6ff !important; border: 1px solid #bfdbfe; }
+    span[data-baseweb="tag"] span { color: #1e40af !important; }
     
-    /* Sidebar Tags */
-    span[data-baseweb="tag"] {
-        background-color: #eff6ff !important;
-        border: 1px solid #bfdbfe;
-    }
-    span[data-baseweb="tag"] span {
-        color: #1e40af !important;
-    }
-    
-    /* Expander Header */
-    .streamlit-expanderHeader {
-        background-color: #ffffff !important;
-        color: #1f2937 !important;
-        border: 1px solid #e5e7eb;
-    }
+    /* EXPANDER */
+    .streamlit-expanderHeader { background-color: #ffffff !important; color: #1f2937 !important; border: 1px solid #e5e7eb; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -117,11 +74,91 @@ st.markdown("""
 st.title("Fridge Raider v3 Pro")
 st.markdown("### 🍳 Your Personal AI Chef")
 st.write("Stop wasting food. Select your ingredients, and let's cook something amazing.")
-st.write("---")
+
+# --- SMART VEGAN LOGIC ---
+NON_VEGAN_ITEMS = {
+    "eggs", "cheese", "butter", "milk", "chicken", "beef", "bacon", "tuna", 
+    "salmon", "shrimp", "honey", "cream cheese", "yogurt", "mayo", "ground beef", 
+    "parmesan", "mozzarella", "feta"
+}
 
 # --- THE RECIPE DATABASE ---
 recipes = [
-    # --- NEW VEGGIE SPECIALS (5-6 Ingredients) ---
+    # --- VEGAN SPECIALS 🌱 ---
+    {
+        "name": "Spicy Peanut Noodles 🍜",
+        "ingredients": {"pasta", "peanut butter", "soy sauce", "garlic", "chili flakes", "lime"},
+        "instructions": "Boil pasta. Mix peanut butter, soy sauce, garlic, chili, lime, and a splash of pasta water. Toss.",
+        "image": "https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Lentil Soup 🥣",
+        "ingredients": {"lentils", "carrots", "onion", "vegetable broth", "garlic", "spinach"},
+        "instructions": "Sauté veggies. Add lentils and broth. Simmer 20 mins until soft. Stir in spinach.",
+        "image": "https://images.unsplash.com/photo-1547592166-23acbe346499?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Chickpea Smash Sandwich 🥪",
+        "ingredients": {"chickpeas", "avocado", "lemon", "bread", "onion", "salt"},
+        "instructions": "Mash chickpeas and avocado together with lemon and onion. Spread on toasted bread.",
+        "image": "https://images.unsplash.com/photo-1539252554453-1f958b22e70b?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Black Bean Tacos 🌮",
+        "ingredients": {"black beans", "corn", "tortilla", "avocado", "salsa", "lime"},
+        "instructions": "Warm beans and corn. Fill tortillas. Top with avocado slices, salsa, and lime juice.",
+        "image": "https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Roasted Veggie Bowl 🥗",
+        "ingredients": {"sweet potato", "broccoli", "rice", "olive oil", "tahini", "lemon"},
+        "instructions": "Roast veggies at 400F. Serve over rice. Drizzle with tahini mixed with lemon.",
+        "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Garlic Green Beans 🥒",
+        "ingredients": {"green beans", "olive oil", "garlic", "lemon", "almonds"},
+        "instructions": "Blanch beans. Sauté garlic in oil. Toss beans in mix. Top with lemon/almonds.",
+        "image": "https://images.unsplash.com/photo-1550951478-439401777596?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Crispy Potato Wedges 🥔",
+        "ingredients": {"potatoes", "oil", "paprika", "salt", "garlic"},
+        "instructions": "Cut potatoes into wedges. Toss with oil and spices. Bake 400F for 30-35 mins.",
+        "image": "https://images.unsplash.com/photo-1630431341973-02e1b40a0f05?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Roasted Butternut Squash 🍠",
+        "ingredients": {"butternut squash", "olive oil", "cinnamon", "maple syrup", "salt"},
+        "instructions": "Cube squash. Toss with oil, cinnamon, syrup, salt. Roast 400F for 30 mins.",
+        "image": "https://images.unsplash.com/photo-1576092794353-91c271811e51?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Pasta Aglio e Olio 🍝",
+        "ingredients": {"pasta", "olive oil", "garlic", "chili flakes", "parsley"},
+        "instructions": "Sauté garlic and chili in generous oil. Toss with cooked pasta and pasta water.",
+        "image": "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80"
+    },
+
+    # --- VEGETARIAN / PANTRY STAPLES ---
+    {
+        "name": "Buttered Sweet Corn 🌽",
+        "ingredients": {"corn", "butter", "salt", "pepper"},
+        "instructions": "Boil or steam corn. Toss generously with butter, salt, and pepper.",
+        "image": "https://images.unsplash.com/photo-1551754655-4d7862924585?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Garlic Sautéed Mushrooms 🍄",
+        "ingredients": {"mushrooms", "butter", "garlic", "soy sauce", "parsley"},
+        "instructions": "Sauté mushrooms in butter until browned. Add garlic and soy sauce. Cook 2 mins.",
+        "image": "https://images.unsplash.com/photo-1520627581788-294084f74d0a?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        "name": "Cheesy Rice 🍚",
+        "ingredients": {"rice", "cheese", "butter", "milk", "salt"},
+        "instructions": "Mix hot cooked rice with butter, milk, and cheese until melted and creamy.",
+        "image": "https://images.unsplash.com/photo-1596560548464-f010549b84d7?auto=format&fit=crop&w=600&q=80"
+    },
     {
         "name": "Roasted Brussels Sprouts 🥬",
         "ingredients": {"brussels sprouts", "olive oil", "balsamic vinegar", "honey", "salt"},
@@ -133,12 +170,6 @@ recipes = [
         "ingredients": {"kale", "apple", "walnuts", "lemon", "olive oil", "parmesan"},
         "instructions": "Massage kale with oil/lemon. Toss with sliced apples, toasted walnuts, and shaved parm.",
         "image": "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=600&q=80"
-    },
-    {
-        "name": "Roasted Butternut Squash 🍠",
-        "ingredients": {"butternut squash", "olive oil", "cinnamon", "maple syrup", "salt"},
-        "instructions": "Cube squash. Toss with oil, cinnamon, syrup, salt. Roast 400F for 30 mins.",
-        "image": "https://images.unsplash.com/photo-1576092794353-91c271811e51?auto=format&fit=crop&w=600&q=80"
     },
     {
         "name": "Cabbage Stir Fry 🥬",
@@ -176,8 +207,6 @@ recipes = [
         "instructions": "Sauté onion. Add flour/milk/broth to thicken. Add broccoli, simmer until soft. Stir in cheese.",
         "image": "https://images.unsplash.com/photo-1605282823759-3e969d27a44f?auto=format&fit=crop&w=600&q=80"
     },
-
-    # --- BREAKFAST ---
     {
         "name": "Classic Omelette 🍳",
         "ingredients": {"eggs", "cheese", "butter", "salt"},
@@ -214,8 +243,6 @@ recipes = [
         "instructions": "Dice potatoes, peppers, and onions. Fry until soft/crispy. Crack eggs on top and steam until set.",
         "image": "https://images.unsplash.com/photo-1590554035658-4560b411d735?auto=format&fit=crop&w=600&q=80"
     },
-
-    # --- LUNCH ---
     {
         "name": "Grilled Cheese Sandwich 🥪",
         "ingredients": {"bread", "cheese", "butter"},
@@ -270,8 +297,6 @@ recipes = [
         "instructions": "Grate zucchini and squeeze out water. Mix with flour, egg, cheese. Fry spoonfuls in oil until crispy.",
         "image": "https://images.unsplash.com/photo-1563229569-4252a1d7f02b?auto=format&fit=crop&w=600&q=80"
     },
-
-    # --- DINNER ---
     {
         "name": "Tomato Pasta 🍝",
         "ingredients": {"pasta", "tomato sauce", "garlic", "olive oil"},
@@ -411,14 +436,6 @@ recipes = [
         "image": "https://images.unsplash.com/photo-1596450523450-482025740441?auto=format&fit=crop&w=600&q=80"
     },
     {
-        "name": "Garlic Green Beans 🥒",
-        "ingredients": {"green beans", "butter", "garlic", "lemon", "almonds"},
-        "instructions": "Blanch beans. Sauté garlic in butter. Toss beans in butter mix. Top with lemon/almonds.",
-        "image": "https://images.unsplash.com/photo-1550951478-439401777596?auto=format&fit=crop&w=600&q=80"
-    },
-    
-    # --- DESSERT / SNACKS ---
-    {
         "name": "Banana Bread 🍌",
         "ingredients": {"banana", "flour", "sugar", "butter", "eggs"},
         "instructions": "Mash bananas, mix with wet then dry ingredients. Bake 350F for 60 mins.",
@@ -470,23 +487,15 @@ recipes = [
 
 # --- APP LOGIC ---
 
-# 1. Setup ingredients list
 all_possible_ingredients = set()
 for r in recipes:
     all_possible_ingredients.update(r['ingredients'])
 
 sorted_ingredients = sorted(list(all_possible_ingredients))
 
-# 2. Sidebar Controls
+# --- SIDEBAR: Just the Fridge ---
 st.sidebar.title("🥑 The Fridge")
-
-# --- MOVED FILTERS TO TOP FOR VISIBILITY ---
-st.sidebar.header("Filters")
-only_full_match = st.sidebar.checkbox("✅ Cook Now (Full Match)", value=False)
-simple_meals_only = st.sidebar.checkbox("🥕 Simple Meals (5-6 Ingredients)", value=False)
-st.sidebar.markdown("---")
-
-st.sidebar.markdown("Check what you have:")
+st.sidebar.write("Check what you have:")
 user_ingredients = st.sidebar.multiselect(
     "Ingredients:", 
     options=sorted_ingredients,
@@ -494,65 +503,65 @@ user_ingredients = st.sidebar.multiselect(
 )
 user_fridge = set(user_ingredients)
 
-# 3. Find and Display Matches
-st.markdown("### 👨‍🍳 Recipes You Can Cook")
+# --- SIDEBAR: Global Cook Now ---
+st.sidebar.markdown("---")
+only_full_match = st.sidebar.checkbox("✅ Cook Now (Full Match)", value=False)
 
-# Filter matches first
-matches = []
-for recipe in recipes:
-    required_ingredients = recipe['ingredients']
-    matching_items = user_fridge.intersection(required_ingredients)
-    missing_items = required_ingredients - user_fridge
-    
-    match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
-    
-    # 1. COOK NOW FILTER
-    if only_full_match and match_percent < 100:
-        continue
+# --- MAIN PAGE TABS ---
+st.write(" ")
+tab1, tab2, tab3 = st.tabs(["🍽 All Recipes", "🌱 Vegan", "🥕 Simple (5-6 Ingred)"])
 
-    # 2. SIMPLE MEALS FILTER (5-6 Ingredients Only)
-    if simple_meals_only:
-        if not (5 <= len(required_ingredients) <= 6):
+def render_recipes(filter_mode="all"):
+    matches = []
+    
+    for recipe in recipes:
+        required_ingredients = recipe['ingredients']
+        matching_items = user_fridge.intersection(required_ingredients)
+        missing_items = required_ingredients - user_fridge
+        match_percent = int((len(matching_items) / len(required_ingredients)) * 100)
+        
+        # GLOBAL FILTER: Cook Now
+        if only_full_match and match_percent < 100:
             continue
+            
+        # TAB SPECIFIC FILTERS
+        if filter_mode == "vegan":
+            if not required_ingredients.isdisjoint(NON_VEGAN_ITEMS):
+                continue
+        elif filter_mode == "simple":
+            if not (5 <= len(required_ingredients) <= 6):
+                continue
+        
+        if len(matching_items) >= 1:
+            matches.append({
+                "recipe": recipe,
+                "matching_items": matching_items,
+                "missing_items": missing_items,
+                "match_percent": match_percent
+            })
+            
+    matches.sort(key=lambda x: x['match_percent'], reverse=True)
     
-    if len(matching_items) >= 1:
-        matches.append({
-            "recipe": recipe,
-            "matching_items": matching_items,
-            "missing_items": missing_items,
-            "match_percent": match_percent
-        })
+    if not matches:
+        st.info("No recipes found in this category with your current ingredients!")
+        return
 
-# Sort matches by percentage (highest match first)
-matches.sort(key=lambda x: x['match_percent'], reverse=True)
-
-if not matches:
-    if only_full_match or simple_meals_only:
-        st.warning("No recipes found with these filters. Try unchecking filters or adding ingredients!")
-    else:
-        st.info("👋 Hey there! Select some ingredients from the sidebar to get started.")
-else:
     col1, col2 = st.columns(2)
-    
     for i, item in enumerate(matches):
         recipe = item['recipe']
         ing_count = len(recipe['ingredients'])
         
-        # Display in alternating columns
         with (col1 if i % 2 == 0 else col2):
-            # Using a container to create a 'card' effect
             with st.container():
                 st.image(recipe['image'], use_container_width=True)
                 st.subheader(recipe['name'])
                 st.caption(f"{ing_count} Ingredients")
                 
-                # Progress bar for match strength
                 if item['match_percent'] == 100:
                     st.progress(item['match_percent'], text="🔥 Perfect Match!")
                 else:
                     st.progress(item['match_percent'], text=f"{item['match_percent']}% Match")
                 
-                # --- VISUAL DISPLAY FOR INGREDIENTS ---
                 st.write("**You have:**")
                 have_html = "".join([f'<span class="have-tag">✔ {ing}</span>' for ing in item['matching_items']])
                 st.markdown(have_html, unsafe_allow_html=True)
@@ -567,5 +576,12 @@ else:
 
                 with st.expander("📝 View Instructions"):
                     st.write(recipe['instructions'])
-                
                 st.markdown("---")
+
+# Render content in tabs
+with tab1:
+    render_recipes("all")
+with tab2:
+    render_recipes("vegan")
+with tab3:
+    render_recipes("simple")
