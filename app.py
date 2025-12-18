@@ -13,7 +13,7 @@ st.markdown("""
     .stApp { background-color: #f3f4f6 !important; }
 
     /* 3. TEXT COLOR */
-    h1, h2, h3, h4, h5, h6, p, div, span, label, li {
+    h1, h2, h3, h4, h5, h6, p, div, span, label, li, textarea {
         color: #1f2937 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
@@ -21,20 +21,21 @@ st.markdown("""
     /* 4. SIDEBAR */
     section[data-testid="stSidebar"] { background-color: #ffffff !important; border-right: 1px solid #e5e7eb; }
     
-    /* --- 5. MOBILE DROPDOWN FIX --- */
-    div[data-baseweb="popover"], div[data-baseweb="popover"] > div { background-color: #111111 !important; border: 1px solid #333333 !important; }
-    ul[data-baseweb="menu"] { background-color: #111111 !important; }
-    li[data-baseweb="option"] { background-color: #111111 !important; color: #ffffff !important; }
-    li[data-baseweb="option"] span { color: #ffffff !important; }
-    li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] { background-color: #2563eb !important; color: #ffffff !important; }
-    div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1f2937 !important; border: 1px solid #d1d5db; }
-    div[data-baseweb="select"] svg { fill: #6b7280 !important; }
+    /* TEXT AREA STYLING */
+    .stTextArea textarea {
+        background-color: #ffffff !important;
+        color: #1f2937 !important;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+    }
+    .stTextArea label {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: #2563eb !important;
+    }
 
     /* 6. TAB STYLING */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
-        background-color: transparent;
-    }
+    .stTabs [data-baseweb="tab-list"] { gap: 10px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] {
         background-color: #ffffff;
         border-radius: 8px;
@@ -42,10 +43,7 @@ st.markdown("""
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         border: 1px solid #e5e7eb;
     }
-    .stTabs [aria-selected="true"] {
-        background-color: #2563eb !important;
-        color: white !important;
-    }
+    .stTabs [aria-selected="true"] { background-color: #2563eb !important; color: white !important; }
 
     /* 7. HEADER */
     h1 {
@@ -61,9 +59,18 @@ st.markdown("""
     .have-tag { background-color: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 15px; font-size: 0.85rem; font-weight: 600; display: inline-block; margin: 2px; border: 1px solid #86efac; }
     .missing-tag { background-color: #f3f4f6; color: #6b7280; padding: 4px 10px; border-radius: 15px; font-size: 0.85rem; display: inline-block; margin: 2px; border: 1px dashed #d1d5db; }
     
-    /* SIDEBAR TAGS */
-    span[data-baseweb="tag"] { background-color: #eff6ff !important; border: 1px solid #bfdbfe; }
-    span[data-baseweb="tag"] span { color: #1e40af !important; }
+    /* SIDEBAR RECOGNIZED TAGS */
+    .sidebar-tag {
+        background-color: #eff6ff;
+        color: #1e40af;
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        display: inline-block;
+        border: 1px solid #bfdbfe;
+        font-size: 0.8rem;
+    }
     
     /* EXPANDER */
     .streamlit-expanderHeader { background-color: #ffffff !important; color: #1f2937 !important; border: 1px solid #e5e7eb; }
@@ -71,9 +78,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- HEADER SECTION ---
-st.title("Fridge Raider v3 Pro")
-st.markdown("### 🍳 Your Personal AI Chef")
-st.write("Stop wasting food. Select your ingredients, and let's cook something amazing.")
+st.title("Fridge Raider v4")
+st.markdown("### 🍳 Cook with what you have.")
+st.write("We don't want you to buy more food. We want you to use what is already in your kitchen.")
 
 # --- SMART VEGAN LOGIC ---
 NON_VEGAN_ITEMS = {
@@ -493,15 +500,49 @@ for r in recipes:
 
 sorted_ingredients = sorted(list(all_possible_ingredients))
 
-# --- SIDEBAR: Just the Fridge ---
+# --- SIDEBAR: Just the Fridge (TEXT INPUT) ---
 st.sidebar.title("🥑 The Fridge")
-st.sidebar.write("Check what you have:")
-user_ingredients = st.sidebar.multiselect(
-    "Ingredients:", 
-    options=sorted_ingredients,
-    default=["eggs", "cheese", "butter"]
-)
-user_fridge = set(user_ingredients)
+st.sidebar.write("What do you have?")
+# Text Area for input
+user_input_text = st.sidebar.text_area("Type items (e.g. eggs, onions, tofu):", "eggs, cheese, butter")
+
+# PROCESS INPUT
+# 1. Split by comma or newline
+import re
+raw_items = re.split(r'[,\n]', user_input_text)
+# 2. Clean up whitespace and lower case
+cleaned_items = [x.strip().lower() for x in raw_items if x.strip()]
+
+# 3. Match against database
+user_fridge = set()
+recognized_items = []
+
+for item in cleaned_items:
+    # Exact match check
+    if item in sorted_ingredients:
+        user_fridge.add(item)
+        recognized_items.append(item)
+    else:
+        # Partial match check (e.g. "egg" matches "eggs")
+        # Check if user input is singular of a plural ingredient
+        for db_item in sorted_ingredients:
+            if item in db_item or db_item in item: 
+                # Safety check to avoid matching "egg" to "eggplant"
+                if len(item) > 3 and (item in db_item or db_item in item):
+                    user_fridge.add(db_item)
+                    recognized_items.append(db_item)
+                    break
+                elif item == db_item[:-1]: # Simple singular check
+                    user_fridge.add(db_item)
+                    recognized_items.append(db_item)
+                    break
+
+# Show recognized tags in sidebar
+if recognized_items:
+    st.sidebar.write("Found ingredients:")
+    tags_html = "".join([f'<span class="sidebar-tag">{ing}</span>' for ing in set(recognized_items)])
+    st.sidebar.markdown(tags_html, unsafe_allow_html=True)
+
 
 # --- SIDEBAR: Global Cook Now ---
 st.sidebar.markdown("---")
